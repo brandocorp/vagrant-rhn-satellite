@@ -16,14 +16,15 @@ module VagrantPlugins
         def call(env)
           @app.call(env)
 
+          return unless @machine.config.satellite.enable
           return unless @machine.communicate.ready? && provision_enabled?(env)
 
-          @machine.config.satellite.validate!(@machine)
+          @machine.config.satellite.validate_registration!(@machine)
 
           if system_registered?
-            env[:ui].info I18n.t('vagrant-rhn-satellite.action.registered')
+            env[:ui].info I18n.t('vagrant-rhn-satellite.action.register.noop')
           else
-            env[:ui].info I18n.t('vagrant-rhn-satellite.action.registering')
+            env[:ui].info I18n.t('vagrant-rhn-satellite.action.register.required')
             @register_script = determine_register_script
             fetch_register_script(env)
             register_system(env)
@@ -97,17 +98,31 @@ module VagrantPlugins
           end
         end
 
+        def system_id
+          @system_id ||= get_system_id
+        end
+
+        def get_system_id
+          id = nil
+          @machine.communicate.sudo("cat /etc/sysconfig/rhn/systemid") do |type, data|
+            if [:stderr, :stdout].include?(type)
+              id_match = data.match(/\<string\>ID\-(\d+)\<\/string\>/)
+              id = id_match.captures[0].strip if id_match
+            end
+          end
+          id
+        end
+
         def register_system(env)
           @machine.communicate.tap do |guest|
             guest.upload(@tmp_file_path, 'register.sh')
             register = "/bin/bash register.sh 2>&1"
-            guest.sudo(register) do |type, data|
-              if [:stderr, :stdout].include?(type)
-                next if data =~ /stdin: is not a tty/
-                env[:ui].info(data)
-              end
-            end
+            guest.sudo(register)
           end
+          env[:ui].info I18n.t(
+            'vagrant-rhn-satellite.action.register.success',
+            id: system_id
+          )
         end
 
       end

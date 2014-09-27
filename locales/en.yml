@@ -2,9 +2,20 @@ en:
   vagrant-rhn-satellite:
     config:
       script_required: "The registration script must be configured."
+      hostname_or_api_required: "You must provide either a hostname or an api config value to deregister from satellite"
+      username_required: "You must provide a username to deregister from satellite"
+      password_required: "You must provide a password to deregister from satellite"
     action:
-      registered: "System is already registered with satellite."
-      registering: "Registering system with satellite server..."
+      register:
+        required: "Registering system with satellite server..."
+        success: "System %{id} registered with satellite server."
+        failed: "System was unable to register with satellite."
+        noop: "System is already registered with satellite."
+      deregister:
+        required: "Removing system from satellite server..."
+        success: "Removed system %{id} from satellite server."
+        failed: "Unable to remove system %{id} from satellite server."
+        noop: "System is not registered with satellite."
     download:
       downloading: "Downloading registration script from: %{url}"
       interrupted: "Registration script download was interrupted. Exiting."

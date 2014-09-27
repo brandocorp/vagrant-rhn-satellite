@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{Register vagrant nodes with a Red Hat Network Satellite server}
   spec.description   = %q{A vagrant plugin that allows registration with a Red Hat Network Satellite server as part of the provisioning process.}
   spec.homepage      = "https://github.com/brandocorp/vagrant-rhn-satellite"
-  spec.license       = "apachev2"
+  spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }

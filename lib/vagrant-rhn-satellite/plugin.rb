@@ -14,6 +14,11 @@ module VagrantPlugins
         hook.after(Vagrant::Action::Builtin::Provision, Action::SatelliteRegistration)
       end
 
+      action_hook(:deregister, Plugin::ALL_ACTIONS) do |hook|
+        require_relative 'action/satellite_deregistration'
+        hook.after(Vagrant::Action::Builtin::DestroyConfirm, Action::SatelliteDeregistration)
+      end
+
       config(:satellite) do
         require_relative 'config'
         Config
