@@ -1,0 +1,10 @@
+en:
+  vagrant-rhn-satellite:
+    config:
+      script_required: "The registration script must be configured."
+    action:
+      registered: "System is already registered with satellite."
+      registering: "Registering system with satellite server..."
+    download:
+      downloading: "Downloading registration script from: %{url}"
+      interrupted: "Registration script download was interrupted. Exiting."
